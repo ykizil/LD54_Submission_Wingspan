@@ -1,0 +1,201 @@
+[gd_scene load_steps=24 format=3 uid="uid://ny20sf8kn2y2"]
+
+[ext_resource type="Script" path="res://scripts/Helikopter.gd" id="1_vfpsa"]
+[ext_resource type="Texture2D" uid="uid://d3vgf6wtakgf8" path="res://sprites/Helikopter.png" id="2_0jksw"]
+[ext_resource type="Texture2D" uid="uid://ehv4vonc6eg2" path="res://sprites/HeliLight.png" id="2_6f321"]
+[ext_resource type="Script" path="res://scripts/RotorArea.gd" id="3_71b5q"]
+[ext_resource type="AudioStream" uid="uid://xwk24ej5yyvm" path="res://audio/sfx/rotor.wav" id="5_fo1e6"]
+[ext_resource type="AudioStream" uid="uid://chf76bm2ddqme" path="res://audio/sfx/RotorDamage.wav" id="5_knn0s"]
+[ext_resource type="Material" uid="uid://dvq254oehbqvl" path="res://materials/unshaded_ingame_ui.tres" id="7_7brfj"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bfmwx"]
+friction = 0.0
+
+[sub_resource type="Animation" id="Animation_j5bol"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:energy")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_7p78h"]
+resource_name = "light_sine"
+loop_mode = 1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:energy")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(16, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 16, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dsard"]
+_data = {
+"RESET": SubResource("Animation_j5bol"),
+"light_sine": SubResource("Animation_7p78h")
+}
+
+[sub_resource type="Animation" id="Animation_aq12n"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_ds16x"]
+resource_name = "pervane_donmesi"
+loop_mode = 1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 1e-05, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_oc2ve"]
+_data = {
+"RESET": SubResource("Animation_aq12n"),
+"pervane_donmesi": SubResource("Animation_ds16x")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0ym2d"]
+height = 82.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_17vo4"]
+size = Vector2(80, 4)
+
+[sub_resource type="Gradient" id="Gradient_nvp1j"]
+offsets = PackedFloat32Array(0, 0.188596)
+colors = PackedColorArray(1, 0.566667, 0, 1, 1, 0.916667, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gr54l"]
+gradient = SubResource("Gradient_nvp1j")
+
+[sub_resource type="Curve" id="Curve_jciue"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_u7mmn"]
+curve = SubResource("Curve_jciue")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_enxcn"]
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+gravity = Vector3(0, 588, 0)
+initial_velocity_min = 134.75
+initial_velocity_max = 134.75
+orbit_velocity_min = 0.0
+orbit_velocity_max = 0.0
+scale_min = 0.1
+scale_max = 0.1
+scale_curve = SubResource("CurveTexture_u7mmn")
+color = Color(1, 0.85098, 0, 1)
+color_ramp = SubResource("GradientTexture1D_gr54l")
+
+[sub_resource type="Gradient" id="Gradient_n04qf"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tk67w"]
+gradient = SubResource("Gradient_n04qf")
+
+[node name="Helikopter" type="RigidBody2D"]
+texture_filter = 1
+position = Vector2(96, 344)
+physics_material_override = SubResource("PhysicsMaterial_bfmwx")
+lock_rotation = true
+linear_damp = 1.0
+script = ExtResource("1_vfpsa")
+
+[node name="HeliLight" type="PointLight2D" parent="."]
+position = Vector2(0, -3)
+scale = Vector2(0.9, 0.84)
+color = Color(1, 0, 0, 1)
+energy = 0.0
+texture = ExtResource("2_6f321")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="HeliLight"]
+autoplay = "light_sine"
+libraries = {
+"": SubResource("AnimationLibrary_dsard")
+}
+
+[node name="HeliSprite" type="Sprite2D" parent="."]
+position = Vector2(0, -3)
+scale = Vector2(0.9, 0.84)
+texture = ExtResource("2_0jksw")
+
+[node name="Pervane" type="Polygon2D" parent="HeliSprite"]
+position = Vector2(13.3333, -14.2857)
+scale = Vector2(1, 1.19048)
+polygon = PackedVector2Array(-39, 1, -39, 3, 37, 3, 37, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="HeliSprite/Pervane"]
+autoplay = "pervane_donmesi"
+speed_scale = 8.0
+libraries = {
+"": SubResource("AnimationLibrary_oc2ve")
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.57079
+shape = SubResource("CapsuleShape2D_0ym2d")
+
+[node name="RotorArea" type="Area2D" parent="."]
+position = Vector2(12, -15)
+script = ExtResource("3_71b5q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RotorArea"]
+position = Vector2(-1, 2)
+shape = SubResource("RectangleShape2D_17vo4")
+
+[node name="RotorDamageSound" type="AudioStreamPlayer" parent="RotorArea"]
+stream = ExtResource("5_knn0s")
+volume_db = -9.0
+
+[node name="Sparks" type="GPUParticles2D" parent="RotorArea"]
+position = Vector2(-1, 2)
+emitting = false
+amount = 16
+process_material = SubResource("ParticleProcessMaterial_enxcn")
+texture = SubResource("GradientTexture2D_tk67w")
+
+[node name="RotorSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_fo1e6")
+volume_db = -24.0
+autoplay = true
+
+[node name="RestartLabel" type="Label" parent="."]
+visible = false
+top_level = true
+texture_filter = 1
+material = ExtResource("7_7brfj")
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Press R to restart
+(If you want to, of course)"
+
+[connection signal="body_entered" from="RotorArea" to="RotorArea" method="_on_body_entered"]
+[connection signal="body_exited" from="RotorArea" to="RotorArea" method="_on_body_exited"]

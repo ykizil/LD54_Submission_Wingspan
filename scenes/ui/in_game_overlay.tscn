@@ -1,0 +1,160 @@
+[gd_scene load_steps=9 format=3 uid="uid://b604ynisc41o4"]
+
+[ext_resource type="Script" path="res://scripts/ui/RotorHealthBar.gd" id="1_fjot4"]
+[ext_resource type="Script" path="res://scripts/ui/LevelEndLabel.gd" id="2_qmmor"]
+
+[sub_resource type="Theme" id="Theme_wuk75"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gtq0g"]
+bg_color = Color(0.372549, 0.372549, 0.372549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ojvwq"]
+bg_color = Color(0.811765, 0.388235, 0.372549, 1)
+
+[sub_resource type="Animation" id="Animation_ahgfb"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_ttmkd"]
+resource_name = "fade_in"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_nytjb"]
+_data = {
+"RESET": SubResource("Animation_ahgfb"),
+"fade_in": SubResource("Animation_ttmkd")
+}
+
+[node name="Overlay" type="CanvasLayer"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_wuk75")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -244.5
+offset_top = 8.0
+offset_right = 244.5
+offset_bottom = 50.0
+grow_horizontal = 2
+alignment = 1
+
+[node name="HealthLabel" type="Label" parent="Control/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "Rotor Health: "
+
+[node name="RotorHealthBar" type="ProgressBar" parent="Control/HBoxContainer"]
+custom_minimum_size = Vector2(300, 40)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_gtq0g")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ojvwq")
+value = 100.0
+show_percentage = false
+script = ExtResource("1_fjot4")
+
+[node name="LevelEndLabel" type="Label" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+text = "Press SPACE to continue..."
+script = ExtResource("2_qmmor")
+
+[node name="FadeIn" type="ColorRect" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Control/FadeIn"]
+autoplay = "fade_in"
+libraries = {
+"": SubResource("AnimationLibrary_nytjb")
+}
+
+[node name="Label" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -201.0
+offset_top = 5.0
+offset_right = -7.0
+offset_bottom = 31.0
+grow_horizontal = 0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+text = "Esc to Menu (Beware, you will have to start from the beginning.) - R to Reset Level"

@@ -1,0 +1,136 @@
+[gd_scene load_steps=13 format=3 uid="uid://baldkq73enga7"]
+
+[ext_resource type="Script" path="res://scripts/Helikopter.gd" id="1_h20vl"]
+[ext_resource type="Texture2D" uid="uid://ehv4vonc6eg2" path="res://sprites/HeliLight.png" id="2_5bkto"]
+[ext_resource type="Texture2D" uid="uid://d3vgf6wtakgf8" path="res://sprites/Helikopter.png" id="3_cn41t"]
+[ext_resource type="AudioStream" uid="uid://xwk24ej5yyvm" path="res://audio/sfx/rotor.wav" id="4_p35fn"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bfmwx"]
+friction = 0.0
+
+[sub_resource type="Animation" id="Animation_j5bol"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:energy")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_7p78h"]
+resource_name = "light_sine"
+loop_mode = 1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:energy")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(16, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 16, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_dsard"]
+_data = {
+"RESET": SubResource("Animation_j5bol"),
+"light_sine": SubResource("Animation_7p78h")
+}
+
+[sub_resource type="Animation" id="Animation_aq12n"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_ds16x"]
+resource_name = "pervane_donmesi"
+loop_mode = 1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 1e-05, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.5, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_oc2ve"]
+_data = {
+"RESET": SubResource("Animation_aq12n"),
+"pervane_donmesi": SubResource("Animation_ds16x")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_brwpk"]
+height = 84.0
+
+[node name="Helikopter" type="RigidBody2D"]
+position = Vector2(96, 344)
+physics_material_override = SubResource("PhysicsMaterial_bfmwx")
+lock_rotation = true
+script = ExtResource("1_h20vl")
+
+[node name="HeliLight" type="PointLight2D" parent="."]
+position = Vector2(0, -3)
+scale = Vector2(0.9, 0.84)
+color = Color(1, 0, 0, 1)
+energy = 0.0
+texture = ExtResource("2_5bkto")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="HeliLight"]
+autoplay = "light_sine"
+libraries = {
+"": SubResource("AnimationLibrary_dsard")
+}
+
+[node name="HeliSprite" type="Sprite2D" parent="."]
+position = Vector2(0, -3)
+scale = Vector2(0.9, 0.84)
+texture = ExtResource("3_cn41t")
+
+[node name="Pervane" type="Polygon2D" parent="HeliSprite"]
+position = Vector2(13.3333, -14.2857)
+scale = Vector2(1, 1.19048)
+polygon = PackedVector2Array(-39, 1, -39, 3, 37, 3, 37, 1)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="HeliSprite/Pervane"]
+autoplay = "pervane_donmesi"
+speed_scale = 8.0
+libraries = {
+"": SubResource("AnimationLibrary_oc2ve")
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_brwpk")
+
+[node name="RotorSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_p35fn")
+volume_db = -24.0
+autoplay = true
+
+[node name="RestartLabel" type="Label" parent="."]
+visible = false
+top_level = true
+texture_filter = 1
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Press R to restart
+(If you want to, of course)"

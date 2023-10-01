@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0sahruvk1nsa"]
+
+[ext_resource type="Script" path="res://scripts/Rope.gd" id="1_irmia"]
+
+[node name="Rope" type="DampedSpringJoint2D"]
+position = Vector2(96, 344)
+node_a = NodePath("../Helikopter")
+node_b = NodePath("../Cargo")
+disable_collision = false
+length = 15.0
+script = ExtResource("1_irmia")
+
+[node name="RopeLine" type="Line2D" parent="."]
+top_level = true
+points = PackedVector2Array(0, 0, 0, 0)
+width = 2.0

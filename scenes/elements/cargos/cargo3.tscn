@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3 uid="uid://bn2jqaxqjuofd"]
+
+[ext_resource type="Script" path="res://scripts/Cargo.gd" id="1_lx5v2"]
+[ext_resource type="Texture2D" uid="uid://pj64uqgagdxh" path="res://sprites/cargos/Cargo3.png" id="2_yvbbt"]
+[ext_resource type="AudioStream" uid="uid://drwaddljgpwfj" path="res://audio/sfx/cargo_crash.wav" id="3_41p2n"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_qf4cm"]
+friction = 0.1
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_w7a8m"]
+streams_count = 1
+stream_0/stream = ExtResource("3_41p2n")
+stream_0/weight = 1.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_34jtj"]
+size = Vector2(28, 242)
+
+[node name="Cargo" type="RigidBody2D"]
+position = Vector2(96, 424)
+physics_material_override = SubResource("PhysicsMaterial_qf4cm")
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("1_lx5v2")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, 114)
+rotation = 1.5708
+scale = Vector2(1.4878, 1.33333)
+texture = ExtResource("2_yvbbt")
+
+[node name="CargoSFX" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_w7a8m")
+max_polyphony = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 114)
+shape = SubResource("RectangleShape2D_34jtj")
